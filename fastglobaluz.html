@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastGlobalUz — Virtual Raqam Bozori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05080f;
+  --bg2: #080c16;
+  --bg3: #0c1120;
+  --fg: #f0f4ff;
+  --fg2: #7a8aaa;
+  --fg3: #3a4a6a;
+  --accent: #00d4ff;
+  --accent2: #6c4fff;
+  --accent3: #ff4f8b;
+  --card: rgba(255,255,255,0.03);
+  --card2: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(0,212,255,0.2);
+  --glow: rgba(0,212,255,0.15);
+  --glow2: rgba(108,79,255,0.12);
+}
+[data-theme="light"] {
+  --bg: #f8faff;
+  --bg2: #edf1fb;
+  --bg3: #e2e8f8;
+  --fg: #0a0e1f;
+  --fg2: #4a5880;
+  --fg3: #a0aac8;
+  --accent: #0055cc;
+  --accent2: #6c4fff;
+  --accent3: #e0185a;
+  --card: rgba(0,0,0,0.025);
+  --card2: rgba(0,0,0,0.05);
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,85,204,0.2);
+  --glow: rgba(0,85,204,0.1);
+  --glow2: rgba(108,79,255,0.08);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:background .7s ease,color .7s ease;
+}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;}
+
+/* ══════════════ CURSOR ══════════════ */
+.cur{
+  position:fixed;
+  width:10px;height:10px;
+  background:var(--accent);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:screen;
+}
+.cur.big{width:40px;height:40px;background:rgba(0,212,255,0.18);}
+
+/* ══════════════ NAV ══════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:200;
+  padding:18px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  background:rgba(5,8,15,0.55);
+  transition:background .7s;
+}
+[data-theme="light"] nav{background:rgba(248,250,255,0.72);}
+
+.logo{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:1.35rem;
+  letter-spacing:-0.5px;
+  display:flex;align-items:center;gap:10px;
+}
+.logo-icon{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-icon svg{width:18px;height:18px;}
+.logo-text{
+  background:linear-gradient(135deg,var(--fg) 40%,var(--fg2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.logo-text em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.nav-right{display:flex;align-items:center;gap:10px;}
+
+.nav-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;
+  border-radius:100px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--fg2);
+  font-size:0.82rem;
+  cursor:pointer;
+  transition:all .3s;
+  backdrop-filter:blur(8px);
+}
+.nav-pill:hover{border-color:var(--accent);color:var(--accent);background:var(--glow);}
+.nav-pill svg{width:14px;height:14px;}
+
+.nav-cta{
+  padding:9px 22px;
+  border-radius:100px;
+  border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-size:0.88rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .3s;
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 28px var(--glow),0 4px 12px var(--glow2);}
+.nav-cta svg{width:15px;height:15px;transition:transform .3s;}
+.nav-cta:hover svg{transform:translateX(2px) translateY(-1px);}
+
+/* ══════════════ HERO ══════════════ */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:130px 40px 80px;
+  position:relative;
+  text-align:center;
+  overflow:hidden;
+}
+
+/* Canvas bg */
+#heroCanvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  opacity:0.6;
+}
+
+.hero-content{position:relative;z-index:2;}
+
+.live-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 18px 7px 12px;
+  border-radius:100px;
+  border:1px solid rgba(0,212,255,0.3);
+  background:rgba(0,212,255,0.06);
+  font-size:0.78rem;
+  color:var(--accent);
+  margin-bottom:32px;
+  animation:fadeUp .9s ease both;
+  backdrop-filter:blur(12px);
+  font-weight:500;
+}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 0 0 rgba(0,212,255,0.6);
+  animation:livePulse 2s ease infinite;
+}
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(0,212,255,0.6);}
+  70%{box-shadow:0 0 0 10px rgba(0,212,255,0);}
+  100%{box-shadow:0 0 0 0 rgba(0,212,255,0);}
+}
+
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(3rem,7.5vw,6rem);
+  font-weight:800;
+  line-height:1.02;
+  letter-spacing:-3px;
+  margin-bottom:28px;
+  animation:fadeUp .9s ease .12s both;
+}
+.h1-line{display:block;}
+.h1-grad{
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 50%,var(--accent3) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-size:200%;
+  animation:gradShift 4s ease infinite;
+}
+@keyframes gradShift{0%,100%{background-position:0%}50%{background-position:100%}}
+
+.hero-sub{
+  font-size:1.12rem;
+  color:var(--fg2);
+  max-width:540px;
+  line-height:1.72;
+  margin:0 auto 40px;
+  animation:fadeUp .9s ease .24s both;
+}
+
+.hero-actions{
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp .9s ease .36s both;
+}
+
+.btn-main{
+  padding:15px 34px;
+  border-radius:14px;
+  border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-size:1rem;font-weight:600;
+  cursor:pointer;
+  transition:all .3s;
+  display:flex;align-items:center;gap:10px;
+  position:relative;overflow:hidden;
+}
+.btn-main::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.btn-main:hover::before{opacity:1;}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 16px 44px var(--glow),0 8px 20px var(--glow2);}
+/* Telegram paper plane SVG inside btn */
+.btn-main svg{width:18px;height:18px;flex-shrink:0;}
+
+.btn-ghost{
+  padding:15px 34px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--fg);
+  font-size:1rem;font-weight:500;
+  cursor:pointer;
+  transition:all .3s;
+  display:flex;align-items:center;gap:10px;
+  backdrop-filter:blur(12px);
+}
+.btn-ghost:hover{border-color:var(--accent);background:var(--glow);transform:translateY(-2px);}
+.btn-ghost svg{width:17px;height:17px;}
+
+/* ══════════════ LIVE STATS CHART ══════════════ */
+.stats-block{
+  margin-top:72px;
+  animation:fadeUp .9s ease .5s both;
+  width:100%;max-width:860px;
+}
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:32px;
+}
+.stat-card{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px 16px;
+  backdrop-filter:blur(12px);
+  position:relative;overflow:hidden;
+  transition:all .4s;
+}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 16px 40px var(--glow);}
+.stat-card::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .4s;
+}
+.stat-card:hover::after{transform:scaleX(1);}
+.stat-label-sm{font-size:0.72rem;color:var(--fg2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px;}
+.stat-num-big{
+  font-family:'Syne',sans-serif;
+  font-size:1.9rem;font-weight:800;
+  letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--fg),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-change{font-size:0.72rem;color:#22c55e;margin-top:4px;display:flex;align-items:center;gap:3px;}
+.stat-change.down{color:#ef4444;}
+
+/* LIVE CHART */
+.chart-wrap{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px;
+  backdrop-filter:blur(12px);
+}
+.chart-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;
+}
+.chart-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;}
+.chart-legend{display:flex;gap:16px;}
+.leg{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--fg2);}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+#liveChart{width:100%;height:160px;display:block;}
+
+/* ══════════════ SECTION COMMON ══════════════ */
+.sec{position:relative;z-index:2;}
+.sec-tag{
+  font-size:0.72rem;text-transform:uppercase;
+  letter-spacing:3px;color:var(--accent);
+  font-weight:600;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-tag::before{
+  content:'';width:24px;height:1px;
+  background:var(--accent);
+}
+.sec-h{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.9rem,4vw,3rem);
+  font-weight:800;letter-spacing:-1.2px;
+  line-height:1.08;margin-bottom:14px;
+}
+.sec-p{color:var(--fg2);font-size:1rem;line-height:1.72;max-width:520px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:all .75s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:none;}
+
+/* ══════════════ FEATURES ══════════════ */
+.features-sec{
+  padding:110px 48px;
+  max-width:1240px;margin:0 auto;
+}
+.feat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:60px;
+}
+.feat-card{
+  padding:34px 30px;
+  border-radius:22px;
+  border:1px solid var(--border);
+  background:var(--card);
+  backdrop-filter:blur(12px);
+  transition:all .45s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
+}
+.feat-card::before{
+  content:'';position:absolute;
+  top:-80px;right:-80px;
+  width:180px;height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--glow),transparent 70%);
+  opacity:0;transition:opacity .4s;
+}
+.feat-card:hover::before{opacity:1;}
+.feat-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-6px);
+  box-shadow:0 24px 60px rgba(0,212,255,0.1);
+}
+.feat-ico{
+  width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:22px;
+  box-shadow:0 8px 24px var(--glow);
+}
+.feat-ico svg{width:24px;height:24px;color:#fff;}
+.feat-card h3{
+  font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;
+  margin-bottom:10px;letter-spacing:-.3px;
+}
+.feat-card p{color:var(--fg2);font-size:0.88rem;line-height:1.68;}
+
+/* ══════════════ HOW IT WORKS ══════════════ */
+.how-sec{
+  padding:110px 48px;
+  background:linear-gradient(180deg,var(--bg2),var(--bg));
+}
+.how-inner{max-width:1100px;margin:0 auto;}
+.timeline{
+  display:flex;gap:0;
+  margin-top:64px;
+  position:relative;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:28px;left:56px;right:56px;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3),var(--accent));
+  background-size:200%;
+  animation:gradShift 3s linear infinite;
+}
+.tl-item{
+  flex:1;padding:0 28px;text-align:center;
+  position:relative;z-index:1;
+}
+.tl-num{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--bg);
+  border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;
+  color:var(--accent);
+  margin:0 auto 22px;
+  box-shadow:0 0 0 6px var(--bg),0 0 0 8px rgba(0,212,255,0.15);
+  transition:all .4s;
+}
+.tl-item:hover .tl-num{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border-color:transparent;
+  box-shadow:0 0 0 6px var(--bg),0 0 30px var(--glow);
+  transform:scale(1.1);
+}
+.tl-item h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:10px;}
+.tl-item p{color:var(--fg2);font-size:0.85rem;line-height:1.62;}
+
+/* ══════════════ PRICING ══════════════ */
+.pricing-sec{
+  padding:110px 48px;
+  max-width:1100px;margin:0 auto;
+}
+.price-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:22px;margin-top:64px;
+}
+.price-card{
+  padding:38px 32px;border-radius:24px;
+  border:1px solid var(--border);
+  background:var(--card);
+  backdrop-filter:blur(16px);
+  transition:all .45s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+.price-card:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(0,212,255,0.1);}
+.price-card.hot{
+  border-color:rgba(0,212,255,0.4);
+  background:linear-gradient(160deg,rgba(0,212,255,0.05),rgba(108,79,255,0.05));
+  box-shadow:0 0 80px rgba(0,212,255,0.08),inset 0 1px 0 rgba(0,212,255,0.15);
+}
+.hot-tag{
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:0.7rem;font-weight:700;
+  padding:5px 16px;border-radius:100px;
+  white-space:nowrap;letter-spacing:.5px;
+}
+.price-name{font-size:0.78rem;color:var(--fg2);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
+.price-val{
+  font-family:'Syne',sans-serif;
+  font-size:3rem;font-weight:800;letter-spacing:-2px;
+  line-height:1;margin-bottom:6px;
+}
+.price-val sub{font-size:1rem;font-weight:400;color:var(--fg2);letter-spacing:0;}
+.price-desc{font-size:0.85rem;color:var(--fg2);margin-bottom:26px;line-height:1.6;}
+.price-list{list-style:none;margin-bottom:30px;}
+.price-list li{
+  padding:9px 0;font-size:0.87rem;color:var(--fg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.price-list li svg{width:15px;height:15px;color:var(--accent);flex-shrink:0;}
+.price-btn{
+  width:100%;padding:13px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:0.9rem;font-weight:600;
+  cursor:pointer;transition:all .3s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.price-btn:hover{opacity:.85;transform:translateY(-1px);box-shadow:0 8px 24px var(--glow);}
+.price-btn.ghost{background:none;border:1px solid var(--border);color:var(--fg);}
+.price-btn.ghost:hover{border-color:var(--accent);background:var(--glow);box-shadow:none;}
+
+/* ══════════════ BOT PREVIEW ══════════════ */
+.bot-sec{
+  padding:110px 48px;
+  background:var(--bg2);
+}
+.bot-inner{
+  max-width:1060px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:70px;align-items:center;
+}
+.phone-wrap{
+  position:relative;
+  display:flex;justify-content:center;
+}
+.phone-glow{
+  position:absolute;
+  width:340px;height:340px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.12),transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}
+.phone-frame{
+  width:300px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:22px 18px;
+  box-shadow:0 40px 100px rgba(0,0,0,0.4);
+  position:relative;z-index:1;
+  animation:floatPhone 5s ease-in-out infinite;
+}
+@keyframes floatPhone{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.phone-bar{
+  display:flex;align-items:center;gap:10px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.phone-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+}
+.phone-avatar svg{width:18px;height:18px;color:#fff;}
+.phone-name{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;}
+.phone-online{font-size:0.68rem;color:#22c55e;}
+.msg{margin-bottom:10px;}
+.msg-bubble{
+  display:inline-block;padding:10px 14px;
+  border-radius:14px;font-size:0.82rem;line-height:1.55;
+  max-width:220px;
+}
+.msg.in .msg-bubble{
+  background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(108,79,255,0.08));
+  border:1px solid rgba(0,212,255,0.15);
+}
+.msg.out{text-align:right;}
+.msg.out .msg-bubble{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border-radius:14px 14px 4px 14px;
+}
+.msg-time{font-size:0.62rem;color:var(--fg3);margin-top:3px;padding:0 4px;}
+.typing-row{display:flex;align-items:center;gap:4px;padding:8px 14px;}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:td 1.2s ease infinite;}
+.t-dot:nth-child(2){animation-delay:.2s;}
+.t-dot:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,80%,100%{transform:scale(1);opacity:.4}40%{transform:scale(1.25);opacity:1}}
+
+.bot-info .sec-tag{margin-bottom:12px;}
+.bot-perks{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
+.perk{display:flex;align-items:flex-start;gap:13px;}
+.perk-ico{
+  width:36px;height:36px;border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--card2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.perk-ico svg{width:16px;height:16px;color:var(--accent);}
+.perk-text h4{font-size:0.9rem;font-weight:600;margin-bottom:2px;}
+.perk-text p{font-size:0.81rem;color:var(--fg2);line-height:1.5;}
+
+/* ══════════════ CTA ══════════════ */
+.cta-sec{
+  padding:130px 48px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-orb{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:400px;
+  background:radial-gradient(ellipse,rgba(0,212,255,0.07) 0%,rgba(108,79,255,0.05) 50%,transparent 70%);
+  pointer-events:none;
+}
+.cta-sec h2{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  font-weight:800;letter-spacing:-2px;
+  margin-bottom:20px;position:relative;
+}
+.cta-sec p{color:var(--fg2);font-size:1.05rem;max-width:480px;margin:0 auto 38px;line-height:1.7;position:relative;}
+
+/* ══════════════ FOOTER ══════════════ */
+footer{
+  border-top:1px solid var(--border);
+  padding:44px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+  position:relative;z-index:2;
+}
+.footer-left .logo{font-size:1.1rem;}
+.footer-right{font-size:0.82rem;color:var(--fg2);}
+.footer-right a{color:var(--accent);}
+
+/* ══════════════ TOUR ══════════════ */
+.t-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0);
+  z-index:500;
+  display:none;
+  pointer-events:none;
+  transition:background .4s;
+}
+.t-overlay.on{display:block;background:rgba(0,0,0,0.82);pointer-events:auto;backdrop-filter:blur(3px);}
+.t-hl{
+  position:fixed;
+  border:2px solid var(--accent);
+  border-radius:18px;
+  box-shadow:0 0 0 9999px rgba(0,0,0,0.75),0 0 50px rgba(0,212,255,0.4);
+  z-index:501;
+  pointer-events:none;
+  transition:all .55s cubic-bezier(.34,1.56,.64,1);
+}
+.t-tip{
+  position:fixed;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:18px;
+  padding:22px 26px;
+  max-width:310px;
+  z-index:502;
+  transition:all .5s ease;
+  box-shadow:0 24px 70px rgba(0,0,0,0.5);
+  backdrop-filter:blur(20px);
+}
+.t-tip h4{
+  font-family:'Syne',sans-serif;font-size:0.98rem;font-weight:700;
+  color:var(--accent);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.t-tip h4 svg{width:16px;height:16px;}
+.t-tip p{font-size:0.85rem;color:var(--fg2);line-height:1.65;margin-bottom:18px;}
+.t-foot{display:flex;align-items:center;justify-content:space-between;}
+.t-count{font-size:0.72rem;color:var(--fg3);}
+.t-btns{display:flex;gap:8px;}
+.t-btn{
+  padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;font-family:inherit;
+}
+.t-btn.nxt{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.t-btn.skp{background:var(--card2);color:var(--fg2);border:1px solid var(--border);}
+.t-btn:hover{opacity:.85;}
+
+/* ══════════════ RESPONSIVE ══════════════ */
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .price-grid{grid-template-columns:1fr;}
+  .bot-inner{grid-template-columns:1fr;gap:48px;}
+  .phone-wrap{order:-1;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .timeline{flex-direction:column;gap:32px;}
+  .timeline::before{display:none;}
+  footer{flex-direction:column;align-items:center;text-align:center;}
+}
+@media(max-width:600px){
+  .features-sec,.pricing-sec,.how-sec,.bot-sec,.cta-sec{padding:70px 20px;}
+  .feat-grid{grid-template-columns:1fr;}
+  nav .nav-pill{display:none;}
+  .hero{padding:110px 20px 60px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cur" id="cur"></div>
+
+<!-- TOUR -->
+<div class="t-overlay" id="tov">
+  <div class="t-hl" id="thl"></div>
+  <div class="t-tip" id="ttip">
+    <h4 id="tTitle"></h4>
+    <p id="tDesc"></p>
+    <div class="t-foot">
+      <span class="t-count" id="tCnt"></span>
+      <div class="t-btns">
+        <button class="t-btn skp" onclick="endTour()">Yopish</button>
+        <button class="t-btn nxt" id="tNext" onclick="nextStep()">Keyingisi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">
+    <div class="logo-icon">
+      <!-- Globe icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </div>
+    <span class="logo-text">Fast<em>Global</em>Uz</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-pill" onclick="toggleTheme()" id="themeBtn">
+      <!-- Moon icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIco">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span id="themeLbl">Kunduz</span>
+    </button>
+    <button class="nav-pill" onclick="startTour()">
+      <!-- Compass icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      </svg>
+      <span>Avto</span>
+    </button>
+    <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer">
+      <button class="nav-cta">
+        <!-- Telegram paper plane -->
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22.265 2.428a1.993 1.993 0 0 0-2.021-.338L2.04 9.116c-1.31.49-1.302 2.21.012 2.693l4.205 1.565 1.984 6.085c.226.694 1.087.935 1.648.461l2.895-2.437 4.522 3.331c.663.488 1.607.124 1.782-.673l3.218-15.533a1.993 1.993 0 0 0-.041-.18Zm-3.124 3.023-9.217 8.453-3.812-1.418 13.029-7.035Zm-7.52 11.013-.72-2.21 1.25-1.146 1.9 1.4-2.43 1.956Z"/>
+        </svg>
+        Botni ochish
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+        </svg>
+      </button>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Jonli xizmat — 24/7 ishlaydi
+    </div>
+    <h1>
+      <span class="h1-line">Virtual Raqam</span>
+      <span class="h1-line h1-grad">Bozori</span>
+    </h1>
+    <p class="hero-sub">O'zbekistondagi eng tez va ishonchli Telegram virtual raqam platformasi. 50+ mamlakat, bir necha soniyada ulab olasiz.</p>
+    <div class="hero-actions">
+      <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer">
+        <button class="btn-main">
+          <!-- Animated Telegram paper plane SVG -->
+          <svg id="planeSvg" viewBox="0 0 24 24" fill="currentColor" style="animation:planeFly 1.8s ease-in-out infinite;">
+            <path d="M22.265 2.428a1.993 1.993 0 0 0-2.021-.338L2.04 9.116c-1.31.49-1.302 2.21.012 2.693l4.205 1.565 1.984 6.085c.226.694 1.087.935 1.648.461l2.895-2.437 4.522 3.331c.663.488 1.607.124 1.782-.673l3.218-15.533a1.993 1.993 0 0 0-.041-.18Zm-3.124 3.023-9.217 8.453-3.812-1.418 13.029-7.035Zm-7.52 11.013-.72-2.21 1.25-1.146 1.9 1.4-2.43 1.956Z"/>
+          </svg>
+          Telegram Botga o'tish
+        </button>
+      </a>
+      <button class="btn-ghost" onclick="startTour()">
+        <!-- Play icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+        Qanday ishlaydi?
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-block" id="statsBlock">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label-sm">Sotilgan raqamlar</div>
+          <div class="stat-num-big" id="s1">0</div>
+          <div class="stat-change">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1l4 4H6v4H4V5H1z"/></svg>
+            +0.74% bugun
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label-sm">Faol foydalanuvchi</div>
+          <div class="stat-num-big" id="s2">0</div>
+          <div class="stat-change">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1l4 4H6v4H4V5H1z"/></svg>
+            +11.91% bu hafta
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label-sm">Mamlakatlar</div>
+          <div class="stat-num-big" id="s3">0</div>
+          <div class="stat-change">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1l4 4H6v4H4V5H1z"/></svg>
+            +5 yangi
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label-sm">O'rtacha yetkazish</div>
+          <div class="stat-num-big" id="s4">0</div>
+          <div class="stat-change">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1l4 4H6v4H4V5H1z"/></svg>
+            rekord tezlik
+          </div>
+        </div>
+      </div>
+      <!-- LIVE CHART -->
+      <div class="chart-wrap">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Jonli sotuvlar grafigi</div>
+            <div style="font-size:.72rem;color:var(--fg2);margin-top:2px;">So'nggi 24 Soat</div>
+          </div>
+          <div class="chart-legend">
+            <div class="leg"><div class="leg-dot" style="background:var(--accent)"></div>Sotuvlar</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--accent2)"></div>Foydalanuvchilar</div>
+          </div>
+        </div>
+        <canvas id="liveChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-sec sec" id="features">
+  <div class="reveal">
+    <div class="sec-tag">Afzalliklar</div>
+    <h2 class="sec-h">Nima uchun FastGlobalUz?</h2>
+    <p class="sec-p">Raqobatchilardan farqli o'laroq, biz faqat bitta narsaga e'tibor beramiz — sizning vaqtingiz va pulingizni tejash.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card reveal" style="transition-delay:.08s">
+      <div class="feat-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>
+      <h3>Tezkor yetkazish</h3>
+      <p>Raqamingizni o'rtacha 3 soniya ichida oling. Hech qanday kutish, hech qanday muammo yo'q.</p>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:.16s">
+      <div class="feat-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/>
+        </svg>
+      </div>
+      <h3>50+ Mamlakat</h3>
+      <p>AQSh, Rossiya, Uzbekistan, Keniya, Pokiston va boshqa 45+ davlatlar raqamlari.</p>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:.24s">
+      <div class="feat-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <h3>To'liq xavfsizlik</h3>
+      <p>Shaxsiy ma'lumotlaringiz himoyalangan. Anonim xarid qilish imkoniyati mavjud.</p>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:.32s">
+      <div class="feat-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <h3>Eng arzon narxlar</h3>
+      <p>Bozordagi eng past narxlar. 3 000 so'mdan boshlab. Ommaviy xaridlarda katta chegirmalar.</p>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:.4s">
+      <div class="feat-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/>
+        </svg>
+      </div>
+      <h3>Avtomatik bot</h3>
+      <p>24/7 ishlaydigan aqlli bot. Buyurtma bering, to'lang va soniyalar ichida raqamingizni oling.</p>
+    </div>
+    <div class="feat-card reveal" style="transition-delay:.48s">
+      <div class="feat-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <h3>Tezkor yordam</h3>
+      <p>Admin har qanday muammoni 15 daqiqa ichida hal qiladi. O'zbek tilida to'liq qo'llab-quvvatlash.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-sec sec" id="how">
+  <div class="how-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="sec-tag" style="justify-content:center">Jarayon</div>
+      <h2 class="sec-h" style="text-align:center">Atigi 4 qadam</h2>
+      <p class="sec-p" style="margin:0 auto">Ro'yxatdan o'tish kerak emas. Faqat Telegram va bir necha daqiqa vaqtingiz.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal" style="transition-delay:.1s">
+        <div class="tl-num">01</div>
+        <h3>Botni oching</h3>
+        <p>Telegram orqali @fastglobal_uzbot botiga kiring va /start ni bosing.</p>
+      </div>
+      <div class="tl-item reveal" style="transition-delay:.2s">
+        <div class="tl-num">02</div>
+        <h3>Mamlakat tanlang</h3>
+        <p>Bozor tugmasini bosib kerakli raqamni tanlang.</p>
+      </div>
+      <div class="tl-item reveal" style="transition-delay:.3s">
+        <div class="tl-num">03</div>
+        <h3>To'lov qiling</h3>
+        <p>Humo, UzCard yoki Online Ilovalar — qulay to'lov usulini tanlang.</p>
+      </div>
+      <div class="tl-item reveal" style="transition-delay:.4s">
+        <div class="tl-num">04</div>
+        <h3>Raqamni oling</h3>
+        <p>Bir zumda raqamingiz va SMS kodi avtomatik botda paydo bo'ladi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-sec sec" id="pricing">
+  <div class="reveal" style="text-align:center">
+    <div class="sec-tag" style="justify-content:center">Narxlar</div>
+    <h2 class="sec-h" style="text-align:center">Shaffof narxlar</h2>
+    <p class="sec-p" style="margin:0 auto">Bizning takliflarimiz.</p>
+  </div>
+  <div class="price-grid">
+    <div class="price-card reveal" style="transition-delay:.1s">
+      <div class="price-name">Oddiy</div>
+      <div class="price-val">3 000 <sub>so'm</sub></div>
+      <div class="price-desc">Dan boshlanadi</div>
+      <ul class="price-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 10+ raqamlar</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SMS qabul qilish</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tezkor ulanish</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Ishonchli xizmat</li>
+      </ul>
+      <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer"><button class="price-btn ghost">Botdan xarid</button></a>
+    </div>
+    <div class="price-card hot reveal" style="transition-delay:.2s">
+      <div class="hot-tag">Eng mashhur</div>
+      <div class="price-name">Premium</div>
+      <div class="price-val">7 000 <sub>so'm</sub></div>
+      <div class="price-desc">Dan boshlanadi</div>
+      <ul class="price-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 5+ raqamlar</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SMS + otziv</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tezkor faollik</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Global ulanish</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Faqat Bizda</li>
+      </ul>
+      <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer"><button class="price-btn">Botdan xarid</button></a>
+    </div>
+    <div class="price-card reveal" style="transition-delay:.3s">
+      <div class="price-name">Biznes</div>
+      <div class="price-val">Maxsus <sub>narx</sub></div>
+      <div class="price-desc">Faqat biznes mijozlar uchun</div>
+      <ul class="price-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Cheksiz raqamlar</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Maxsus ulanish</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Shaxsiy menejer</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Yagona qo'llab-quvvatlash</li>
+      </ul>
+      <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer"><button class="price-btn ghost">Botdan xarid</button></a>
+    </div>
+  </div>
+</section>
+
+<!-- BOT PREVIEW -->
+<section class="bot-sec sec" id="botSec">
+  <div class="bot-inner">
+    <div class="phone-wrap reveal">
+      <div class="phone-glow"></div>
+      <div class="phone-frame">
+        <div class="phone-bar">
+          <div class="phone-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 9h6M9 12h6M9 15h4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="phone-name">FastGlobalUzBot</div>
+            <div class="phone-online">Onlayn</div>
+          </div>
+        </div>
+        <div class="msg in">
+          <div class="msg-bubble">Assalomu alaykum! Qaysi mamlakatning raqamini olmoqchisiz?</div>
+          <div class="msg-time">10:32</div>
+        </div>
+        <div class="msg out">
+          <div class="msg-bubble">AQSh raqami kerak</div>
+          <div class="msg-time">10:33</div>
+        </div>
+        <div class="msg in">
+          <div class="msg-bubble">Raqam tayyor!<br><strong>+1 (347) 555-2847</strong><br>Narx: 3 000 so'm</div>
+          <div class="msg-time">10:34</div>
+        </div>
+        <div class="typing-row">
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="bot-info reveal" style="transition-delay:.15s">
+      <div class="sec-tag">Telegram Bot</div>
+      <h2 class="sec-h">Bot bilan<br>ishlash oson</h2>
+      <p class="sec-p">Hech qanday ro'yxatdan o'tish shart emas. Faqat Telegram kerak. Bot soniyalar ichida javob beradi.</p>
+      <div class="bot-perks">
+        <div class="perk">
+          <div class="perk-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="perk-text">
+            <h4>Ro'yxatdan o'tish kerak emas</h4>
+            <p>Faqat Telegram akkauntingiz bilan kirish kifoya.</p>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+            </svg>
+          </div>
+          <div class="perk-text">
+            <h4>Humo, UzCard, Online Ilovalar</h4>
+            <p>O'zbekistonning barcha to'lov tizimlari qabul qilinadi.</p>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="perk-text">
+            <h4>24/7 ishlaydi</h4>
+            <p>Kecha-yu kunduz, dam olish kunlari ham bot xizmat ko'rsatadi.</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:32px;">
+        <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer">
+          <button class="btn-main">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="animation:planeFly 1.8s ease-in-out infinite;">
+              <path d="M22.265 2.428a1.993 1.993 0 0 0-2.021-.338L2.04 9.116c-1.31.49-1.302 2.21.012 2.693l4.205 1.565 1.984 6.085c.226.694 1.087.935 1.648.461l2.895-2.437 4.522 3.331c.663.488 1.607.124 1.782-.673l3.218-15.533a1.993 1.993 0 0 0-.041-.18Zm-3.124 3.023-9.217 8.453-3.812-1.418 13.029-7.035Zm-7.52 11.013-.72-2.21 1.25-1.146 1.9 1.4-2.43 1。956Z"/>
+            </svg>
+            Botni sinab ko'ring
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec sec" id="ctaSec">
+  <div class="cta-orb"></div>
+  <div class="reveal">
+    <div class="sec-tag" style="justify-content:center">Hoziroq boshlang</div>
+    <h2>Birinchi raqamingizni<br>bugun oling!</h2>
+    <p>Istalgancha virtual raqamni bir zumda oling.</p>
+    <div class="hero-actions" style="justify-content:center">
+      <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer">
+        <button class="btn-main">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="animation:planeFly 1.8s ease-in-out infinite;">
+            <path d="M22.265 2.428a1.993 1.993 0 0 0-2.021-.338L2.04 9.116c-1.31.49-1.302 2.21.012 2.693l4.205 1.565 1.984 6.085c.226.694 1.087.935 1.648.461l2.895-2.437 4.522 3.331c.663.488 1.607.124 1.782-.673l3.218-15.533a1.993 1.993 0 0 0-.041-.18Zm-3.124 3.023-9.217 8.453-3.812-1.418 13.029-7.035Zm-7.52 11.013-.72-2.21 1.25-1.146 1.9 1.4-2.43 1.956Z"/>
+          </svg>
+          Telegram Botga o'tish
+        </button>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
+      <span class="logo-text">Fast<em>Global</em>Uz</span>
+    </div>
+  </div>
+  <div class="footer-right">
+    © 2026 FastGlobalUz &nbsp;·&nbsp; <a href="https://t.me/fastglobal_uzbot" target="_blank" rel="noopener noreferrer"> @fastglobal_uzbot</a>
+  </div>
+</footer>
+
+<style>
+@keyframes planeFly {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  25%  { transform: translate(3px,-3px) rotate(-8deg); }
+  50%  { transform: translate(6px,-5px) rotate(-5deg); }
+  75%  { transform: translate(3px,-2px) rotate(-2deg); }
+  100% { transform: translate(0,0) rotate(0deg); }
+}
+</style>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+let mx=0,my=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+document.querySelectorAll('button,a,.feat-card,.price-card,.stat-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// ── HERO CANVAS PARTICLES ──
+(function(){
+  const canvas=document.getElementById('heroCanvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+  resize();window.addEventListener('resize',resize);
+  const N=90;
+  for(let i=0;i<N;i++) pts.push({
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,
+    r:Math.random()*1.5+.3,
+    a:Math.random()
+  });
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // connections
+    for(let i=0;i<N;i++) for(let j=i+1;j<N;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){
+        ctx.beginPath();
+        ctx.strokeStyle=`rgba(0,212,255,${.12*(1-d/120)})`;
+        ctx.lineWidth=.6;
+        ctx.moveTo(pts[i].x,pts[i].y);
+        ctx.lineTo(pts[j].x,pts[j].y);
+        ctx.stroke();
+      }
+    }
+    pts.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,212,255,${p.a*.6})`;
+      ctx.fill();
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── LIVE CHART ──
+(function(){
+  const canvas=document.getElementById('liveChart');
+  const ctx=canvas.getContext('2d');
+  let sales=[],users=[],t=0;
+  const MAX=60;
+  for(let i=0;i<MAX;i++){
+    sales.push(Math.random()*60+20);
+    users.push(Math.random()*40+10);
+  }
+  function getColor(name){
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function draw(){
+    const W=canvas.width=canvas.parentElement.offsetWidth-56;
+    const H=canvas.height=160;
+    ctx.clearRect(0,0,W,H);
+    const accent=getColor('--accent')||'#00d4ff';
+    const accent2=getColor('--accent2')||'#6c4fff';
+    // grid
+    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){
+      const y=H*i/4;
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    }
+    function drawLine(data,color){
+      const mn=Math.min(...data),mx2=Math.max(...data);
+      const range=mx2-mn||1;
+      ctx.beginPath();
+      data.forEach((v,i)=>{
+        const x=i*(W/(MAX-1));
+        const y=H-((v-mn)/range)*(H*.8)-H*.1;
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';
+      ctx.stroke();
+      // fill
+      ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+      const grad=ctx.createLinearGradient(0,0,0,H);
+      grad.addColorStop(0,color.replace(')',',0.18)').replace('rgb','rgba'));
+      grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=grad;ctx.fill();
+    }
+    drawLine(sales,accent);
+    drawLine(users,accent2);
+    requestAnimationFrame(draw);
+  }
+  draw();
+  setInterval(()=>{
+    t++;
+    sales.push(Math.max(5,sales[sales.length-1]+(Math.random()-.4)*18));
+    users.push(Math.max(2,users[users.length-1]+(Math.random()-.45)*12));
+    if(sales.length>MAX)sales.shift();
+    if(users.length>MAX)users.shift();
+    // update live stat s1
+    document.getElementById('s1').textContent=Math.round(12000+Math.sin(t*.1)*300)+'+';
+    document.getElementById('s2').textContent=Math.round(4600+Math.sin(t*.07)*200)+'+';
+  },1000);
+})();
+
+// ── COUNTERS ──
+function cnt(el,target,suf='',dur=2000){
+  let s=0;const step=target/(dur/16);
+  const id=setInterval(()=>{s+=step;if(s>=target){el.textContent=target+suf;clearInterval(id);return;}el.textContent=Math.floor(s)+suf;},16);
+}
+let started=false;
+new IntersectionObserver(e=>{
+  if(e[0].isIntersecting&&!started){
+    started=true;
+    setTimeout(()=>{
+      cnt(document.getElementById('s1'),12500,'+');
+      cnt(document.getElementById('s2'),4800,'+');
+      cnt(document.getElementById('s3'),50,'+');
+      cnt(document.getElementById('s4'),3,'s');
+    },400);
+  }
+},{threshold:.3}).observe(document.getElementById('statsBlock'));
+
+// ── SCROLL REVEAL ──
+const reveals=document.querySelectorAll('.reveal,.feat-card,.price-card,.tl-item');
+new IntersectionObserver(e=>{
+  e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');});
+},{threshold:.1,rootMargin:'0px 0px -40px 0px'}).observe.bind(
+  new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');});},{threshold:.1,rootMargin:'0px 0px -40px 0px'})
+);
+// fix: proper observer
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');});},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+reveals.forEach(el=>ro.observe(el));
+
+// ── THEME ──
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.getElementById('themeLbl').textContent=dark?'Kunduz':'Tungi';
+  const ico=document.getElementById('themeIco');
+  if(dark){
+    ico.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  } else {
+    ico.innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+}
+
+// ── TOUR ──
+const tourSteps=[
+  {target:'#nav',title:'Navigatsiya',desc:'Bu yerda mavzu o\'zgartirish, sayt bo\'ylab Funksiya va Telegram botga o\'tish tugmalari joylashgan.'},
+  {target:'#hero',title:'Asosiy sahifa',desc:'FastGlobalUz — O\'zbekistondagi eng tez virtual raqam platformasi. Jonli statistika bilan.'},
+  {target:'#statsBlock',title:'Jonli statistika grafigi',desc:'Har 24 soat da yangilanib turadigan savdo grafigi va foydalanuvchilar sonini ko\'rishingiz mumkin.'},
+  {target:'#features',title:'Afzalliklar',desc:'6 ta asosiy afzallik: tezkorlik, 50+ mamlakat, xavfsizlik, arzon narxlar, 24/7 bot va yordam.'},
+  {target:'#how',title:'Qanday ishlaydi?',desc:'Atigi 4 qadam: bot → tanlash → to\'lov → raqam. Bir necha daqiqa ichida tayyor!'},
+  {target:'#pricing',title:'Narxlar',desc:'Oddiy (3 000), Premium (7 000) va Biznes (maxsus) tarif rejalari. Shaffof narxlar.'},
+  {target:'#botSec',title:'Telegram Bot',desc:'Bot bilan muloqot namunasi. Ro\'yxatdan o\'tish shart emas, faqat Telegram kerak.'},
+  {target:'#ctaSec',title:'Tayyor!',desc:'Endi FastGlobalUz haqida hamma narsani bilasiz. Birinchi raqamingizni bugun oling!'},
+];
+let step=0;
+const tov=document.getElementById('tov');
+const thl=document.getElementById('thl');
+const ttip=document.getElementById('ttip');
+function startTour(){step=0;tov.classList.add('on');showStep();}
+function showStep(){
+  const s=tourSteps[step];
+  const el=document.querySelector(s.target);
+  if(!el){nextStep();return;}
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>{
+    const r=el.getBoundingClientRect();
+    thl.style.cssText=`left:${Math.max(r.left-10,4)}px;top:${Math.max(r.top-10,4)}px;width:${Math.min(r.width+20,window.innerWidth-12)}px;height:${r.height+20}px;`;
+    document.getElementById('tTitle').textContent=s.title;
+    document.getElementById('tDesc').textContent=s.desc;
+    document.getElementById('tCnt').textContent=`${step+1} / ${tourSteps.length}`;
+    document.getElementById('tNext').textContent=step===tourSteps.length-1?'Tugatish ✓':'Keyingisi →';
+    let top=Math.max(r.top-10,4)+r.height+30;
+    let left=Math.max(r.left-10,4);
+    if(top+200>window.innerHeight) top=Math.max(r.top-10,4)-190;
+    if(left+320>window.innerWidth) left=window.innerWidth-328;
+    ttip.style.cssText=`top:${Math.max(top,8)}px;left:${Math.max(left,8)}px;`;
+  },380);
+}
+function nextStep(){step++;if(step>=tourSteps.length){endTour();return;}showStep();}
+function endTour(){tov.classList.remove('on');window.scrollTo({top:0,behavior:'smooth'});}
+tov.addEventListener('click',e=>{if(e.target===tov)endTour();});
+</script>
+</body>
+</html>
