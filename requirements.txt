@@ -1,0 +1,5 @@
+aiogram
+apscheduler
+telethon
+aiohttp
+aiohttp-socks
