@@ -37,7 +37,6 @@ CARD_HOLDER = "S.S"
 CHANNELS = [
     {"name": "1-Kanal 📢", "url": "https://t.me/FastGlobalUz", "id": "@FastGlobalUz"},
     {"name": "2-Kanal 📢", "url": "https://t.me/FastGlobalUz_otziv", "id": "@FastGlobalUz_otziv"},
-    {"name": "3-Kanal 📢", "url": "https://t.me/neosjan", "id": "@neosjan"}
 ]
 
 logging.basicConfig(level=logging.INFO)
